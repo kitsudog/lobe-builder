@@ -3,7 +3,8 @@ name: Docker Build and Push
 on:
   push:
     paths:
-      - '.ci/Dockerfile'
+      - '.ci/Dockerfile-base'
+      - '.ci/Dockerfile-builder'
     branches:
       - master
       - main
@@ -70,7 +71,7 @@ jobs:
         with:
           username: kitsudo
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          repository: kitsudo/lobe-builder
+          repository: kitsudo/lobe-base
           readme-filepath: ./README.md
           short-description: ${{ github.event.repository.description }}
 
