@@ -38,28 +38,28 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Build and push base image
-        id: docker_build_alpine
+        id: docker_build_base
         uses: docker/build-push-action@v4
         with:
           context: .
           file: .ci/Dockerfile-base
           build-args: |
             BUILD=github
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: |
             kitsudo/lobe-base:latest
             kitsudo/lobe-base:${{ github.ref_name }}
 
       - name: Build and push builder image
-        id: docker_build_alpine
+        id: docker_build_builder
         uses: docker/build-push-action@v4
         with:
           context: .
           file: .ci/Dockerfile
           build-args: |
             BUILD=github
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: |
             kitsudo/lobe-builder:latest
