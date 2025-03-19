@@ -32,4 +32,4 @@ RUN \
     # Cleanup temp files
     && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
-RUN apt install curl -qy
+RUN apt update && apt install curl -qy && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
