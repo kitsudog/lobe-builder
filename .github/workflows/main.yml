@@ -37,7 +37,21 @@ jobs:
           username: kitsudo
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Build and push image
+      - name: Build and push base image
+        id: docker_build_alpine
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: .ci/Dockerfile-base
+          build-args: |
+            BUILD=github
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            kitsudo/lobe-base:latest
+            kitsudo/lobe-base:${{ github.ref_name }}
+
+      - name: Build and push builder image
         id: docker_build_alpine
         uses: docker/build-push-action@v4
         with:
@@ -48,14 +62,23 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            kitsudo/${{ env.REPO_NAME }}:latest
-            kitsudo/${{ env.REPO_NAME }}:${{ github.ref_name }}
+            kitsudo/lobe-builder:latest
+            kitsudo/lobe-builder:${{ github.ref_name }}
 
-      - name: Docker Hub Description
+      - name: Docker Hub lobe-base Description
         uses: peter-evans/dockerhub-description@v3
         with:
           username: kitsudo
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          repository: kitsudo/${{ env.REPO_NAME }}
+          repository: kitsudo/lobe-builder
+          readme-filepath: ./README.md
+          short-description: ${{ github.event.repository.description }}
+
+      - name: Docker Hub lobe-builder Description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: kitsudo
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          repository: kitsudo/lobe-builder
           readme-filepath: ./README.md
           short-description: ${{ github.event.repository.description }}
