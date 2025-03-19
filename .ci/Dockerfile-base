@@ -1,3 +1,4 @@
+## Set global build ENV
 ARG NODEJS_VERSION="22"
 
 ## Base image for all building stages
@@ -14,7 +15,7 @@ RUN \
     fi \
     # Add required package
     && apt update \
-    && apt install ca-certificates proxychains-ng curl -qy \
+    && apt install ca-certificates proxychains-ng -qy \
     # Prepare required package to distroless
     && mkdir -p /distroless/bin /distroless/etc /distroless/etc/ssl/certs /distroless/lib \
     # Copy proxychains to distroless
@@ -30,3 +31,5 @@ RUN \
     && cp /etc/ssl/certs/ca-certificates.crt /distroless/etc/ssl/certs/ca-certificates.crt \
     # Cleanup temp files
     && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
+RUN apt install curl -qy

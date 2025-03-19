@@ -56,7 +56,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: .ci/Dockerfile
+          file: .ci/Dockerfile-builder
           build-args: |
             BUILD=github
           platforms: linux/amd64
