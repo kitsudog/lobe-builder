@@ -40,7 +40,7 @@ jobs:
           
       - name: Get current date
         id: get-date
-        run: echo "date=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+        run: echo "::set-output name=date::$(date +'%Y%m%d')"
         
       - name: Build and push base image
         id: docker_build_base
@@ -54,7 +54,7 @@ jobs:
           push: true
           tags: |
             kitsudo/lobe-base:latest
-            kitsudo/lobe-base:${{ env.BUILD_DATE }}
+            kitsudo/lobe-base:${{ steps.get-date.outputs.date }}
             kitsudo/lobe-base:${{ github.ref_name }}
 
       - name: Build and push builder image
@@ -69,7 +69,7 @@ jobs:
           push: true
           tags: |
             kitsudo/lobe-builder:latest
-            kitsudo/lobe-base:${{ env.BUILD_DATE }}
+            kitsudo/lobe-base:${{ steps.get-date.outputs.date }}
             kitsudo/lobe-builder:${{ github.ref_name }}
 
       - name: Docker Hub lobe-base Description
