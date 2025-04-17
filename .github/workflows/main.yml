@@ -17,10 +17,16 @@ jobs:
     name: Build and publish
     runs-on: ubuntu-latest
     steps:
+      - name: Get current date
+        shell: bash
+        run: |
+          echo "CURRENT_DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
+      
       - name: Env
         run: |
           env
           echo "REPO_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
+          
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -37,11 +43,7 @@ jobs:
         with:
           username: kitsudo
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          
-      - name: Get current date
-        id: get-date
-        run: echo "CURRENT_DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
-        
+      
       - name: Build and push base image
         id: docker_build_base
         uses: docker/build-push-action@v4
