@@ -31,3 +31,4 @@ RUN \
     && cp /etc/ssl/certs/ca-certificates.crt /distroless/etc/ssl/certs/ca-certificates.crt \
     # Cleanup temp files
     && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+

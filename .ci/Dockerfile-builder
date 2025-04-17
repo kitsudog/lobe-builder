@@ -1,7 +1,10 @@
+## Builder image, install all the dependencies and build the app
 FROM kitsudo/lobe-base AS builder
 
 ARG USE_CN_MIRROR
 ARG NEXT_PUBLIC_BASE_PATH
+ARG NEXT_PUBLIC_SERVICE_MODE
+ARG NEXT_PUBLIC_ENABLE_NEXT_AUTH
 ARG NEXT_PUBLIC_SENTRY_DSN
 ARG NEXT_PUBLIC_ANALYTICS_POSTHOG
 ARG NEXT_PUBLIC_POSTHOG_HOST
@@ -11,6 +14,13 @@ ARG NEXT_PUBLIC_UMAMI_SCRIPT_URL
 ARG NEXT_PUBLIC_UMAMI_WEBSITE_ID
 
 ENV NEXT_PUBLIC_BASE_PATH="${NEXT_PUBLIC_BASE_PATH}"
+
+ENV NEXT_PUBLIC_SERVICE_MODE="${NEXT_PUBLIC_SERVICE_MODE:-server}" \
+    NEXT_PUBLIC_ENABLE_NEXT_AUTH="${NEXT_PUBLIC_ENABLE_NEXT_AUTH:-1}" \
+    APP_URL="http://app.com" \
+    DATABASE_DRIVER="node" \
+    DATABASE_URL="postgres://postgres:password@localhost:5432/postgres" \
+    KEY_VAULTS_SECRET="use-for-build"
 
 # Sentry
 ENV NEXT_PUBLIC_SENTRY_DSN="${NEXT_PUBLIC_SENTRY_DSN}" \
@@ -52,4 +62,9 @@ RUN \
     # Use pnpm for corepack
     && corepack use $(sed -n 's/.*"packageManager": "\(.*\)".*/\1/p' package.json) \
     # Install the dependencies
-    && pnpm i
+    && pnpm i \
+    # Add db migration dependencies
+    && mkdir -p /deps \
+    && cd /deps \
+    && pnpm init \
+    && pnpm add pg drizzle-orm
